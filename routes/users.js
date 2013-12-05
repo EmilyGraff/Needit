@@ -75,22 +75,14 @@ exports.getAll = function(req, res){
 }
 
 exports.getOne = function (req, res) {
-  console.log(req.params.email)
-  findOne(req, res, function (user) {
+  findOne(req.body.email, res, function (user) {
     res.json(user)
   })
 }
 
 exports.post = function (req, res) {
-  if (!req.body.email || req.body.pseudo === '') {
-      res.send(404)
-  }
-
-  UserModel.findOne(req, res, function(user){
-    if(err) {
-
-    }
-    else if(!user) {
+  findOne(req.body.email, res, function(user){
+    if(!user) {
       var user = new UserModel({
         pseudo : req.body.pseudo,
         email : req.body.email,
@@ -100,13 +92,15 @@ exports.post = function (req, res) {
         score: req.body.score, 
         area_width: req.body.area_width,
         delay: req.body.delay,
-        trades: req.body.trades || null,
-        needs: req.body.needs || null,
-        notifications: req.body.notifications || null,
-        comments_on_me: req.body.comments_on_me || null,
-        transactions: req.body.transactions || null
-      }).save(function (err) {
+        trades: req.body.trades || [],
+        needs: req.body.needs || [],
+        notifications: req.body.notifications || [],
+        comments_on_me: req.body.comments_on_me || [],
+        transactions: req.body.transactions || []
+      })
+      user.save(function (err) {
         if (err) {
+          throw err
           res.send(500)
         }
         res.send(200)
@@ -119,21 +113,22 @@ exports.post = function (req, res) {
 }
 
 // find by id from request.params.id
-function findOne (req, res, next) {
-  if (!isValidEmail(req.params.email)) {
+function findOne (email, res, next) {
+  if (!isValidEmail(email)) {
     res.send(422, 'invalid parameter: email')
   }
-  UserModel.findOne({"email": req.params.email}, function (err, user) {
-      if (err) {
-        res.send(500)
-      } else if (!user) {
-        res.send(404)
-      }
-      return next(user)
+  UserModel.findOne({"email": email}, function (err, user) {
+    if (err) {
+      throw err
+      res.send(500)
+    } else if (!user) {
+      res.send(404)
+    }
+    return next(user)
   })
 }
 
 // check if valid mongodb object id
 function isValidEmail (str) {
-  return /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/.test(str)  -
+  return /^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/.test(str)
 }
