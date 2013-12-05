@@ -112,6 +112,22 @@ exports.post = function (req, res) {
   })
 }
 
+exports.addTrade = function (req, res) {
+  findOne(req.body.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.trades.push({
+        active: req.body.active,
+        keywords: req.body.keywords
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
 // find by id from request.params.id
 function findOne (email, res, next) {
   if (!isValidEmail(email)) {
