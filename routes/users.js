@@ -57,14 +57,25 @@ exports.getOne = function (req, res) {
 };
 
 exports.post = function (req, res) {
-  if (!req.body.title || req.body.title === '') {
+
+  if (!req.body.pseudo || req.body.pseudo === '') {
       res.send(404);
   }
 
   var user = new UserModel({
-    title : req.body.title,
-    body  : req.body.body || '',
-    done  : false
+    pseudo : req.body.pseudo
+    email : req.body.email,
+    inscription: req.body.inscription,
+    adress: req.body.adress,
+    description: req.body.description || '',
+    score: req.body.score, 
+    area_width: req.body.area_width,
+    delay: req.body.delay,
+    trades: req.body.trades || null,
+    needs: req.body.needs || null,
+    notifications: req.body.notifications,
+    comments_on_me: req.body.comments_on_me,
+    transactions: req.body.transactions
   });
 
   user.save(function (err) {
@@ -81,7 +92,7 @@ function findOne (req, res, next) {
     res.send(422, 'invalid parameter: email');
     //throw new APIError(422, errors.wrongId, 'invalid parameter: id')
   }*/
-  ItemModel.findOne({"email": req.params.email}, function (err, user) {
+  UserModel.findOne({"email": req.params.email}, function (err, user) {
       if (err) {
         res.send(500);
       } else if (!user) {
