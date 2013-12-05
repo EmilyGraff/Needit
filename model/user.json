@@ -27,12 +27,12 @@
 	"notifications": [
 		{	
 			"seen": false,
-			"type": "match",
+			"notification_type": "match",
 			"needer": "5465789"
 		},
 		{	
 			"seen": false,
-			"type": "rate",
+			"notification_type": "rate",
 			"transaction": "_9876545"
 		}
 	],
