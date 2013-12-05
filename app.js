@@ -34,6 +34,11 @@ if ('development' == app.get('env')) {
 app.get(routes.users.getAll, users.getAll)
 app.get(routes.users.getOne, users.getOne)
 app.post(routes.users.post,  users.post)
+app.post(routes.users.addTrade, users.addTrade)
+// app.post(routes.users.addNeed, users.addNeed)
+// app.post(routes.users.addNotification, users.addNotification)
+// app.post(routes.users.addComment, users.addComment)
+// app.post(routes.users.addTransaction, users.addTransaction)
 
 // Messages
 app.get(routes.conversations.getAll, conversations.getAll)
