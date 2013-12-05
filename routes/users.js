@@ -42,64 +42,61 @@ var User = new Schema({
 var UserModel = mongoose.model('User', User)
 
 exports.getAll = function(req, res){
-  UserModel.find(function (err, items) {
+  UserModel.find(function (err, users) {
     if (err) {
       res.send(404);
-      //throw new APIError(500, errors.find);
     }
     res.json(users);
-    //return respond(200, items, req, res);
   });
 };
 
 exports.getOne = function (req, res) {
   findOne(req, res, function (user) {
     res.json(user);
-    //return respond(200, item, req, res);
   });
 };
 
-exports.create = function (req, res) {
-  if (!req.body.title || req.body.title === '') {
+exports.post = function (req, res) {
+
+  if (!req.body.pseudo || req.body.pseudo === '') {
       res.send(404);
-    //throw new APIError(400, errors.noTitle);
   }
 
-  var item = new UserModel({
-    title : req.body.title,
-    body  : req.body.body || '',
-    done  : false
+  var user = new UserModel({
+    pseudo : req.body.pseudo
+    email : req.body.email,
+    inscription: req.body.inscription,
+    adress: req.body.adress,
+    description: req.body.description || '',
+    score: req.body.score, 
+    area_width: req.body.area_width,
+    delay: req.body.delay,
+    trades: req.body.trades || null,
+    needs: req.body.needs || null,
+    notifications: req.body.notifications,
+    comments_on_me: req.body.comments_on_me,
+    transactions: req.body.transactions
   });
 
-  item.save(function (err) {
+  user.save(function (err) {
     if (err) {
       res.send(500);
-      //throw new APIError(500, errors.save, err.message);
-    } else {
-        elasticSearch.index(item);
     }
     res.send(200);
-    //return respond(200, item, req, res);
   });
 };
 
 // find by id from request.params.id
 function findOne (req, res, next) {
-  if (typeof(next) !== 'function') {
-    next = function(){}
-  }
   /*if (!isValidObjectID(req.params.id)) {
     res.send(422, 'invalid parameter: email');
     //throw new APIError(422, errors.wrongId, 'invalid parameter: id')
   }*/
-  ItemModel.findOne({"email": req.params.email}, function (err, user) {
-      // The workaround is to use handleError since express.js does not catch those errors
+  UserModel.findOne({"email": req.params.email}, function (err, user) {
       if (err) {
         res.send(500);
-        //new APIError(500, errors.find, err.message).handleError(req, res)
       } else if (!user) {
         res.send(404);
-        //new APIError(404, errors.itemNotFound).handleError(req, res)
       }
       return next(user)
   });
