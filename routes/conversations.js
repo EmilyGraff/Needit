@@ -26,10 +26,7 @@ exports.postOne = function(req, res) {
 		if(err) {
 			res.send(500)
 		}
-		else {
-			//elasticSearch.index(myConversation)
-		}
-		res.json(myConversation)
+		res.send(200)
 	});
 }
 
@@ -37,17 +34,17 @@ exports.postOne = function(req, res) {
 
 // Get all
 exports.getAll = function(req, res) {
-	ConversationModel.find(function (err, conversation) {
+	ConversationModel.find(function (err, conversations) {
 		if (err) {
 			res.send(500)
 		}
-		res.json(conversation)
+		res.json(conversations)
 	});
 };
 
 // Get one
 exports.getOne = function(req, res) {
-	findOne(req, res, function(conversation) {
+	findOne(req, res, function (conversation) {
 		res.json(conversation)
 	});
 };
