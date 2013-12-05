@@ -15,6 +15,9 @@ process.on('uncaughtException', function (exception) {
 })
 
 // all environments
+app.set('views', __dirname + '/views') // html files
+app.engine('html', require('ejs').renderFile)
+app.use(express.static(__dirname + '/public'))
 app.set('port', process.env.PORT || config.port)
 app.use(express.logger('dev'))
 app.use(express.json())
@@ -29,6 +32,14 @@ app.use(function (err, req, res, next) {
 if ('development' == app.get('env')) {
   app.use(express.errorHandler())
 }
+
+// Views
+app.get('/', function (req, res) {
+	res.render('index.html')
+})
+app.get('/login', function (req, res) {
+	res.render('login.html')
+})
 
 // Users
 app.get(routes.users.getAll, users.getAll)
