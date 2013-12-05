@@ -20,11 +20,11 @@ var User = new Schema({
   delay: { type: Number, required: true },
   trades: [{ 
     active: { type: Boolean, required: true }, 
-    timestamp: { type: Date, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
     keywords: { type: Array, required: true }
   }],
   needs: [{
-    timestamp: { type: Date, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
     need: { type: String, required: true }
   }],
   notifications: [{
@@ -39,7 +39,7 @@ var User = new Schema({
   }],
   transactions: [{
     trader: { type: Boolean, required: true },
-    timestamp: { type: Date, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
     need: { type: String, required: true }
   }]
 }, { versionKey: false })
@@ -113,7 +113,7 @@ exports.post = function (req, res) {
 }
 
 exports.addTrade = function (req, res) {
-  findOne(req.body.email, res, function(user){
+  findOne(req.params.email, res, function(user){
     if(!user) {
       res.send(400)
     }
@@ -128,14 +128,29 @@ exports.addTrade = function (req, res) {
   })
 }
 
+exports.addNeed = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.needs.push({
+        need: { type: String, required: true }
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
 // find by id from request.params.id
 function findOne (email, res, next) {
   if (!isValidEmail(email)) {
     res.send(422, 'invalid parameter: email')
   }
   UserModel.findOne({"email": email}, function (err, user) {
-    if (err) throw new APIError(500, errors.find)
-    if (!user) throw new APIError(404, errors.userNotFound)
+    if (err) throw new APIError(500, errors.find).handleError(res)
+    else if (!user) throw new APIError(404, errors.userNotFound).handleError(res)
     return next(user)
   })
 }

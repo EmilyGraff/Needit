@@ -22,7 +22,7 @@ app.use(express.urlencoded())
 app.use(express.methodOverride())
 app.use(app.router)
 app.use(function (err, req, res, next) {
-	err.handleError(req, res)
+	err.handleError(res)
 })
 
 // development only
