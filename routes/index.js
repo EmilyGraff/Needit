@@ -1,7 +1,9 @@
 exports.users = {
-	getAll: "/users"
+	getAll: "/users",
+	getOne: "/users/:email",
+	post: "/users"
 }
 
 exports.messages = {
-	getFrom...
+	
 }
