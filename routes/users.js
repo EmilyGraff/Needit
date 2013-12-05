@@ -1,5 +1,9 @@
-var mongoose = require('mongoose')
-var config   = require('../config')
+var mongoose      = require('mongoose')
+var config        = require('../config')
+var err           = require('../lib/APIError')
+var APIError      = err.APIError
+var errors        = err.errors
+var elasticSearch = require('../lib/elastic-client')
 
 var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
 var db = mongoose.createConnection(uri + '/users')
@@ -50,7 +54,7 @@ new UserModel({
   email: "name@domain.com",
   inscription: new Date(),
   adress: "130 rue difj",
-  description: 'Cooll user',
+  description: 'Cool user',
   score: 1234, 
   area_width: 12,
   delay: 0,
@@ -67,15 +71,13 @@ new UserModel({
 
 exports.getAll = function(req, res){
   UserModel.find(function (err, users) {
-    if (err) {
-      res.send(404)
-    }
+    if (err) throw new APIError(500, errors.find)
     res.json(users)
   })
 }
 
 exports.getOne = function (req, res) {
-  findOne(req.body.email, res, function (user) {
+  findOne(req.params.email, res, function (user) {
     res.json(user)
   })
 }
@@ -99,15 +101,29 @@ exports.post = function (req, res) {
         transactions: req.body.transactions || []
       })
       user.save(function (err) {
-        if (err) {
-          throw err
-          res.send(500)
-        }
+        if (err) throw new APIError(500, errors.save)
+        elasticSearch.index(user)
         res.send(200)
       })
     }
     else {
+      throw new APIError(400, errors.userExists)
+    }
+  })
+}
+
+exports.addTrade = function (req, res) {
+  findOne(req.body.email, res, function(user){
+    if(!user) {
       res.send(400)
+    }
+    else {
+      user.trades.push({
+        active: req.body.active,
+        keywords: req.body.keywords
+      })
+      console.log(user)
+      res.send(200)
     }
   })
 }
@@ -118,12 +134,8 @@ function findOne (email, res, next) {
     res.send(422, 'invalid parameter: email')
   }
   UserModel.findOne({"email": email}, function (err, user) {
-    if (err) {
-      throw err
-      res.send(500)
-    } else if (!user) {
-      res.send(404)
-    }
+    if (err) throw new APIError(500, errors.find)
+    if (!user) throw new APIError(404, errors.userNotFound)
     return next(user)
   })
 }
