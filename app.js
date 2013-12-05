@@ -3,6 +3,7 @@ var http     = require('http')
 var path     = require('path')
 
 var config        = require('./config')
+var err     	  = require('./lib/APIError')
 var routes        = require('./routes')
 var users         = require('./routes/users')
 var conversations = require('./routes/conversations')
@@ -20,10 +21,9 @@ app.use(express.json())
 app.use(express.urlencoded())
 app.use(express.methodOverride())
 app.use(app.router)
-  app.use(function (err, req, res, next) {
-  	console.error(err.stack)
-  	res.send(500)
- })
+app.use(function (err, req, res, next) {
+	err.handleError(req, res)
+})
 
 // development only
 if ('development' == app.get('env')) {

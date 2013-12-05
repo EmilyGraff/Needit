@@ -1,5 +1,8 @@
 var mongoose = require('mongoose')
 var config   = require('../config')
+var err      = require('../lib/APIError')
+var APIError = err.APIError
+var errors   = err.errors
 
 var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
 var db = mongoose.createConnection(uri + '/conversations')
@@ -30,11 +33,11 @@ exports.post = function(req, res) {
 	var myConversation = new ConversationModel({
 		needer : req.body.needer,
 		active : true,
-		need : req.body.need
+		need   : req.body.need
 	});
 
 	myConversation.save(function(err) {
-		if (err) res.send(500)
+		if (err) throw new APIError(500, errors.save)
 		res.send(200)
 	});
 }
@@ -44,7 +47,7 @@ exports.addTrader = function(req, res) {
 	findOne(req, res, function (conversation) {
 		conversation.traders.push(req.body.email)
 		conversation.save(function(err) {
-			if(err) res.send(500)
+			if(err) throw new APIError(500, errors.save)
 			res.send(200)
 		});
 	});
@@ -55,7 +58,7 @@ exports.addMessage = function(req, res) {
 	findOne(req, res, function(conversation) {
 		conversation.messages.push(req.body.message)
 		conversation.save(function(err) {
-			if(err) res.send(500)
+			if(err) throw new APIError(500, errors.save)
 			res.send(200)
 		});
 	});
@@ -64,9 +67,7 @@ exports.addMessage = function(req, res) {
 // Get all
 exports.getAll = function(req, res) {
 	ConversationModel.find(function (err, conversations) {
-		if (err) {
-			res.send(500)
-		}
+		if (err) throw new APIError(500, errors.find)
 		res.json(conversations)
 	});
 };
@@ -81,14 +82,11 @@ exports.getOne = function(req, res) {
 // find by id from request.params.id
 function findOne (req, res, next) {
   if (!isValidObjectID(req.params.id)) {
-  	res.send(422)
+  	throw new APIError(422, errors.invalidEmail)
   }
   ConversationModel.findById(req.params.id, function (err, conversation) {
-      if (err) {
-      	res.send(500)
-      } else if (!conversation) {
-      	res.send(404)
-      }
+      if (err) throw new APIError(500, errors.find)
+      if (!conversation) throw new APIError(404, errors.conversationNotFound)
       return next(conversation)
   });
 };
