@@ -7,5 +7,7 @@ exports.users = {
 exports.conversations = {
 	getAll: "/conversations",
 	getOne: "/conversations/:id",
-	post: "/conversations"
+	post: "/conversations",
+	addTrader: "/conversations/:id/traders",
+	addMessage: "/conversations/:id/messages"
 }
