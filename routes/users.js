@@ -4,7 +4,7 @@ var config   = require('../config')
 var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
 var db = mongoose.createConnection(uri + '/users')
 
-var Schema = mongoose.Schema;
+var Schema = mongoose.Schema
 var User = new Schema({
   pseudo : { type: String, required: true },
   email : { type: String, required: true},
@@ -62,28 +62,28 @@ new UserModel({
 }).save(function (err) {
   if (err) throw err
   console.log('inserted test user')
-});
+})
 
 
 exports.getAll = function(req, res){
   UserModel.find(function (err, users) {
     if (err) {
-      res.send(404);
+      res.send(404)
     }
-    res.json(users);
-  });
-};
+    res.json(users)
+  })
+}
 
 exports.getOne = function (req, res) {
   console.log(req.params.email)
   findOne(req, res, function (user) {
-    res.json(user);
-  });
-};
+    res.json(user)
+  })
+}
 
 exports.post = function (req, res) {
-  if (!req.body.pseudo || req.body.pseudo === '') {
-      res.send(404);
+  if (!req.body.email || req.body.pseudo === '') {
+      res.send(404)
   }
 
   var user = new UserModel({
@@ -100,31 +100,31 @@ exports.post = function (req, res) {
     notifications: req.body.notifications || null,
     comments_on_me: req.body.comments_on_me || null,
     transactions: req.body.transactions || null
-  });
+  })
 
   user.save(function (err) {
     if (err) {
-      res.send(500);
+      res.send(500)
     }
-    res.send(200);
-  });
-};
+    res.send(200)
+  })
+}
 
 // find by id from request.params.id
 function findOne (req, res, next) {
   /*if (!isValidObjectID(req.params.id)) {
-    res.send(422, 'invalid parameter: email');
+    res.send(422, 'invalid parameter: email')
     //throw new APIError(422, errors.wrongId, 'invalid parameter: id')
   }*/
   UserModel.findOne({"email": req.params.email}, function (err, user) {
       if (err) {
-        res.send(500);
+        res.send(500)
       } else if (!user) {
-        res.send(404);
+        res.send(404)
       }
       return next(user)
-  });
-};
+  })
+}
 
 // check if valid mongodb object id
 function isValidObjectID (str) {
