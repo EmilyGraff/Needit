@@ -9,5 +9,6 @@ exports.conversations = {
 	getOne: "/conversations/:id",
 	post: "/conversations",
 	addTrader: "/conversations/:id/traders",
-	addMessage: "/conversations/:id/messages"
+	addMessage: "/conversations/:id/messages",
+	getByNeeder: "/conversations/needer/:email"
 }
