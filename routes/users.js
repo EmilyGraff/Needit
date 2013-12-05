@@ -1,7 +1,8 @@
 var mongoose = require('mongoose')
 var config   = require('../config')
 
-mongoose.connect(process.env.MONGOLAB_URI + '/users' || config.MongoDB_URL)
+var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
+var db = mongoose.createConnection(uri + '/users')
 
 var Schema = mongoose.Schema;
 var User = new Schema({
@@ -11,10 +12,10 @@ var User = new Schema({
   adress: { type: String, required: true},
   description: String,
   score: { type: String, required: true },
-  area_width: { type: int, required: true },
-  delay: { type: int, required: true },
+  area_width: { type: Number, required: true },
+  delay: { type: Number, required: true },
   trades: [{ 
-    active: { type: boolean, required: true }, 
+    active: { type: Boolean, required: true }, 
     timestamp: { type: Date, required: true },
     keywords: { type: Array, required: true }
   }],
@@ -23,7 +24,7 @@ var User = new Schema({
     need: { type: String, required: true }
   }],
   notifications: [{
-    seen: { type: boolean, required: true },
+    seen: { type: Boolean, required: true },
     notification_type: { type: String, required: true },
     transaction: { type: String, required: true }
   }],
@@ -33,13 +34,36 @@ var User = new Schema({
     transaction: { type: String, required: true }
   }],
   transactions: [{
-    trader: { type: boolean, required: true },
+    trader: { type: Boolean, required: true },
     timestamp: { type: Date, required: true },
     need: { type: String, required: true }
   }]
 }, { versionKey: false })
 
-var UserModel = mongoose.model('User', User)
+var UserModel = db.model('User', User)
+
+
+// TEST INSERTS
+
+new UserModel({
+  pseudo: "thomas",
+  email: "name@domain.com",
+  inscription: new Date(),
+  adress: "130 rue difj",
+  description: 'Cooll user',
+  score: 1234, 
+  area_width: 12,
+  delay: 0,
+  trades: [],
+  needs: [],
+  notifications: [],
+  comments_on_me: [],
+  transactions: []
+}).save(function (err) {
+  if (err) throw err
+  console.log('inserted test user')
+});
+
 
 exports.getAll = function(req, res){
   UserModel.find(function (err, users) {
@@ -51,19 +75,19 @@ exports.getAll = function(req, res){
 };
 
 exports.getOne = function (req, res) {
+  console.log(req.params.email)
   findOne(req, res, function (user) {
     res.json(user);
   });
 };
 
 exports.post = function (req, res) {
-
   if (!req.body.pseudo || req.body.pseudo === '') {
       res.send(404);
   }
 
   var user = new UserModel({
-    pseudo : req.body.pseudo
+    pseudo : req.body.pseudo,
     email : req.body.email,
     inscription: req.body.inscription,
     adress: req.body.adress,
@@ -73,9 +97,9 @@ exports.post = function (req, res) {
     delay: req.body.delay,
     trades: req.body.trades || null,
     needs: req.body.needs || null,
-    notifications: req.body.notifications,
-    comments_on_me: req.body.comments_on_me,
-    transactions: req.body.transactions
+    notifications: req.body.notifications || null,
+    comments_on_me: req.body.comments_on_me || null,
+    transactions: req.body.transactions || null
   });
 
   user.save(function (err) {

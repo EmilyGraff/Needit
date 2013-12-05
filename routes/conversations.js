@@ -1,7 +1,8 @@
 var mongoose = require('mongoose')
 var config   = require('../config')
 
-mongoose.connect(process.env.MONGOLAB_URI + '/Conversations' || config.MongoDB_URL)
+var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
+var db = mongoose.createConnection(uri + '/conversations')
 
 var Schema = mongoose.Schema;
 var Conversation = new Schema({
@@ -12,20 +13,28 @@ var Conversation = new Schema({
 	messages : [{ author: String, Conversation: String, timestamp: Date}]
 }, { versionKey: false })
 
-var ConversationModel = mongoose.model('Conversation', Conversation)
+var ConversationModel = db.model('Conversation', Conversation)
+
+// TEST
+new ConversationModel({
+	needer : "name@domain.com",
+	active : true,
+	need : "macbook pro"
+}).save(function(err) {
+	if (err) throw err
+	console.log('insert test conversation')
+});
 
 // Post one
-exports.postOne = function(req, res) {
+exports.post = function(req, res) {
 	var myConversation = new ConversationModel({
 		needer : req.body.needer,
-		active : true, 
+		active : true,
 		need : req.body.need
 	});
 
 	myConversation.save(function(err) {
-		if(err) {
-			res.send(500)
-		}
+		if (err) res.send(500)
 		res.send(200)
 	});
 }

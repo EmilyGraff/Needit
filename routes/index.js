@@ -4,6 +4,8 @@ exports.users = {
 	post: "/users"
 }
 
-exports.messages = {
-	
+exports.conversations = {
+	getAll: "/conversations",
+	getOne: "/conversations/:id",
+	post: "/conversations"
 }
