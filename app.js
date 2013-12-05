@@ -43,9 +43,11 @@ app.post(routes.users.addTrade, users.addTrade)
 // Messages
 app.get(routes.conversations.getAll, conversations.getAll)
 app.get(routes.conversations.getOne, conversations.getOne)
+app.get(routes.conversations.getByNeeder, conversations.getByNeeder)
 app.post(routes.conversations.post, conversations.post)
 app.put(routes.conversations.addTrader, conversations.addTrader)
 app.put(routes.conversations.addMessage, conversations.addMessage)
+
 
 
 http.createServer(app).listen(app.get('port'), function(){

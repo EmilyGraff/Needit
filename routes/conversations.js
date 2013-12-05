@@ -28,6 +28,27 @@ new ConversationModel({
 	console.log('insert test conversation')
 });
 
+
+new ConversationModel({
+	needer : "name@domain.com",
+	active : true,
+	need : "canape"
+}).save(function(err) {
+	if (err) throw err
+	console.log('insert test conversation')
+});
+
+
+// Get by needer -> array conversations
+exports.getByNeeder = function(req, res) {
+	console.log(req.params.email)
+	ConversationModel.find({ 'needer' : req.params.email }, function(err, conversations) {
+		if(err)	res.send(500)
+		res.json(conversations)
+	});
+}
+
+
 // Post one
 exports.post = function(req, res) {
 	var myConversation = new ConversationModel({
