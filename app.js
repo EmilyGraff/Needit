@@ -1,22 +1,29 @@
-var express = require('express')
-var config = require('./config')
-var routes = require('./routes')
-var users = require('./routes/users')
-var messages = require('./routes/messages')
-var http = require('http')
-var path = require('path')
+var express  = require('express')
+var http     = require('http')
+var path     = require('path')
+
+var config   = require('./config')
+/*var routes   = require('./routes')
+var users    = require('./routes/users')
+var messages = require('./routes/messages')*/
 
 var app = express()
 
+process.on('uncaughtException', function (exception) {
+  console.error(exception);
+})
+
 // all environments
-app.set('port', process.env.PORT || config.PORT)
-app.use(express.favicon())
+app.set('port', process.env.PORT || config.port)
 app.use(express.logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(express.methodOverride())
 app.use(app.router)
-app.use(express.static(path.join(__dirname, 'public')))
+  app.use(function (err, req, res, next) {
+  	console.error(err)
+  	res.send(500)
+ })
 
 // development only
 if ('development' == app.get('env')) {
@@ -24,10 +31,14 @@ if ('development' == app.get('env')) {
 }
 
 // Users
-app.get(routes.user.getAll, users.getAll)
+app.get('/users', function (req, res) {
+
+})
 
 // Messages
-app.get(routes.messages.getById..., messages.findOne)
+app.get('/messages/:id', function (req, res) {
+
+})
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'))
