@@ -1,0 +1,53 @@
+{
+	"pseudo": "thibault",
+	"email": "thib@domain.com",
+	"inscription": "5467890",
+	"address": "",
+	"description": "",
+	"score": "678",
+	"area_width": "1",
+	"delay": "2",
+	"trades": [
+		{
+			"active": true,
+			"timestamp": "76587657865",
+			"keywords": [
+				"mug",
+				"mug blanc",
+				"mug facebook"
+			]
+		}
+	],
+	"needs": [
+		{
+			"timestamp": "756876",
+			"need": "macbook pro"
+		}
+	],
+	"notifications": [
+		{	
+			"seen": false,
+			"type": "match",
+			"needer": "5465789"
+		},
+		{	
+			"seen": false,
+			"type": "rate",
+			"transaction": "_9876545"
+		}
+	],
+	"comments_on_me": [
+		{
+			"user": "_865765",
+			"message": "ieuzf iefuh ileufh izufh lzieuf ",
+			"transaction": "_345678"
+		}
+	],
+	"transactions": [
+		{
+			"trader": true,
+			"timestamp": "1752725",
+			"need": "Macbook pro"
+		}
+	]
+}

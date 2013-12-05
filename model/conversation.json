@@ -1,0 +1,32 @@
+{
+	"needer": "5465789",
+	"active": true,
+	"need": "macbook pro",
+	"traders": [
+		"5678",
+		"65789",
+		"345657890"
+	],
+	"messages": [
+		{
+			"author": "5678", 
+			"message": "coucou",
+			"timestamp": "32456687"
+		},
+		{
+			"author": "5678", 
+			"message": "coucou",
+			"timestamp": "32456687"
+		},
+		{
+			"author": "5678", 
+			"message": "coucou",
+			"timestamp": "32456687"
+		},
+		{
+			"author": "5678", 
+			"message": "coucou",
+			"timestamp": "32456687"
+		}
+	]
+}
