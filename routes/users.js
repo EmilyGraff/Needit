@@ -4,6 +4,8 @@ var err           = require('../lib/APIError')
 var APIError      = err.APIError
 var errors        = err.errors
 var elasticSearch = require('../lib/elastic-client')
+var bcrypt        = require 'bcrypt'
+var salt          = bcrypt.genSaltSync 10
 
 var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
 var db = mongoose.createConnection(uri + '/users')
@@ -11,6 +13,7 @@ var db = mongoose.createConnection(uri + '/users')
 var Schema = mongoose.Schema
 var User = new Schema({
   pseudo : { type: String, required: true },
+  password : { type: String, required: true },
   email : { type: String, required: true},
   inscription: { type: Date, required: true, default: Date.now},
   adress: { type: String, required: true},
@@ -48,9 +51,9 @@ var UserModel = db.model('User', User)
 
 
 // TEST INSERTS
-
 new UserModel({
   pseudo: "thomas",
+  password: bcrypt.hashSync('password', salt),
   email: "name@domain.com",
   inscription: new Date(),
   adress: "130 rue difj",
@@ -85,8 +88,10 @@ exports.getOne = function (req, res) {
 exports.post = function (req, res) {
   findOne(req.body.email, res, function(user){
     if(!user) {
+      pass = 
       var user = new UserModel({
         pseudo : req.body.pseudo,
+        password : bcrypt.hashSync(req.body.password, salt)
         email : req.body.email,
         inscription: req.body.inscription,
         adress: req.body.adress,
