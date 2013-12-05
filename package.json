@@ -9,6 +9,7 @@
     "express": "3.4.4",
     "mongoose": "3.8.0",
     "unirest": "0.0.5",
-    "elasticsearchclient":">=0.5.1"
+    "elasticsearchclient":">=0.5.1",
+    "bcrypt": "*"
   }
 }
