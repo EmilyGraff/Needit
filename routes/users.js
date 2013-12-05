@@ -135,5 +135,5 @@ function findOne (req, res, next) {
 
 // check if valid mongodb object id
 function isValidEmail (str) {
-  return /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/.test(str)  -
+  return /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/.test(str)
 }

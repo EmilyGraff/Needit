@@ -10,7 +10,7 @@ var Conversation = new Schema({
 	active : { type: Boolean, required: true},
 	need : { type: String, required: true},
 	traders : { type: Array, required: false},
-	messages : [{ author: String, Conversation: String, timestamp: Date}]
+	messages : [{ author: String, message: String, timestamp: Date}]
 }, { versionKey: false })
 
 var ConversationModel = db.model('Conversation', Conversation)
@@ -40,6 +40,26 @@ exports.post = function(req, res) {
 }
 
 // Put trader
+exports.addTrader = function(req, res) {
+	findOne(req, res, function (conversation) {
+		conversation.traders.push(req.body.email)
+		conversation.save(function(err) {
+			if(err) res.send(500)
+			res.send(200)
+		});
+	});
+}
+
+// put message
+exports.addMessage = function(req, res) {
+	findOne(req, res, function(conversation) {
+		conversation.messages.push(req.body.message)
+		conversation.save(function(err) {
+			if(err) res.send(500)
+			res.send(200)
+		});
+	});
+}
 
 // Get all
 exports.getAll = function(req, res) {
