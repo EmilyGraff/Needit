@@ -26,7 +26,9 @@ app.use(express.logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(express.methodOverride())
-app.use(express.cookieParser('MySeretAintASecret'))
+app.use(express.bodyParser())
+app.use(express.cookieParser())
+app.use(express.session({secret: 'MySecretAintASecret'}))
 app.use(app.router)
 app.use(function (err, req, res, next) {
 	err.handleError(res)
@@ -37,25 +39,26 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler())
 }
 
+
+// Views
+app.get('/', function (req, res) {
+	res.render('landing.html')
+})
+app.get('/login', function (req, res) {
+	res.render('login.html')
+})
 app.post('/login', function(req, res){
   users.findOne(req.body.email, res, function(user){
   	if (bcrypt.compareSync(req.body.password, user.password)){
   		req.session.email = req.body.email
+  		res.cookie('email', req.body.email, { maxAge: 36000000, path:'/'})
   		req.session.logged_in = true
-  		res.send(200)
+  		res.redirect('/')
   	}
   	else {
   		res.send(401)
   	}
   })
-})
-
-// Views
-app.get('/', function (req, res) {
-	res.render('index.html')
-})
-app.get('/login', function (req, res) {
-	res.render('login.html')
 })
 
 // Users

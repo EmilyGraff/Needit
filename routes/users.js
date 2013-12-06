@@ -145,6 +145,7 @@ exports.addNeed = function (req, res) {
       user.needs.push({
         need: req.body.need
       })
+      console.log(user)
       res.send(200)
     }
   })
