@@ -39,9 +39,11 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler())
 }
 
-
 // Views
 app.get('/', function (req, res) {
+	if(!req.session.email || !req.session.logged_in){
+		res.redirect('/login')
+	}
 	res.render('landing.html')
 })
 app.get('/login', function (req, res) {
@@ -53,6 +55,7 @@ app.post('/login', function(req, res){
   		req.session.email = req.body.email
   		res.cookie('email', req.body.email, { maxAge: 36000000, path:'/'})
   		req.session.logged_in = true
+  		console.log(req.session)
   		res.redirect('/')
   	}
   	else {
@@ -61,10 +64,23 @@ app.post('/login', function(req, res){
   })
 })
 app.get('/needs', function(req, res){
+	if(!req.session.email || !req.session.logged_in){
+		res.redirect('/login')
+	}
 	res.render('myneeds.html')
 })
 app.get('/profil', function(req, res){
+	if(!req.session.email || !req.session.logged_in){
+		res.redirect('/login')
+	}
 	res.render('profil.html')
+})
+app.get('/logout', function(req, res){
+	delete req.session.logged_in
+	delete req.session.email
+	req.session = null
+	res.clearCookie('email')
+	res.redirect('/login')
 })
 
 // Users
