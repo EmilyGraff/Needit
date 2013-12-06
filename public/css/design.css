@@ -1,0 +1,25 @@
+html {width:98%;}
+
+.mn_body {background-color: black}
+.inNeed {background-color: #A1A6A9;}
+#needInput { width : 100%;}
+#links a {color: #4C6A89;}
+#logout {margin-left: 5%;}
+a:hover {text-decoration: none !important; color: #3A5392 !important;  text-shadow: 0.2em 0.2em 0.2em #000000;}
+
+
+
+
+.width100p{ width: 100%;}
+
+
+.ln_body { background : url("../images/background.jpg") no-repeat center center fixed;}
+
+.homeTitle {}
+
+#homeImg { opacity: 0.5}
+
+#need { width: 100%;}
+#need input {height: 40px; font-size: 20px;}
+#need button {height: 50px;}
+#punchline {padding-left : 3em;}

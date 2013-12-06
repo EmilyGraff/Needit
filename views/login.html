@@ -68,18 +68,37 @@
 			<div class="span4" id="login-form">
 				<form class="well form-actions">
 					<button class="btn btn-block btn-primary margbot20">Connexion avec Facebook</button>
-					<input type="text" placeholder="Email"  class=" width100p"/>
-					<input type="text" placeholder="Mot de passe" class=" width100p"/>
-					<button class="btn btn-block btn-inverse margtop20">Connexion</button>
+					<input id='email-login' type="text" placeholder="Email"  class=" width100p"/>
+					<input id='pass-login' type="text" placeholder="Mot de passe" class=" width100p"/>
+					<button id="login-submit" class="btn btn-block btn-inverse margtop20">Connexion</button>
 				</form>
 			</div>
 		</div>
 
 		<script type="text/javascript">
+			$('#login-submit').click(function(e){
+				e.preventDefault()
+				$.ajax({
+					url: "/login",
+					type: "POST",
+					data: {
+						email: $('#email-login').val(),
+						password: $('#pass-login').val()
+					},
+					statusCode: {
+				    	401: function() {
+				    		alert( "Wrong email or password");
+				    	},
+				    	200: function() {
+				    		window.location.href = '/'
+				    	}
+				  	}
+				});
+			});
 			$('#signup_submit').click(function(e){
 				e.preventDefault()
 				$.ajax({
-					url: "http://localhost:8888/users/",
+					url: "/users",
 					type: "POST",
 					data: {
 						pseudo: $('#pseudo').val(),
@@ -90,9 +109,6 @@
 					statusCode: {
 				    	400: function() {
 				    		alert( "user already exists ! ");
-				    	},
-				    	200: function() {
-				    		window.location.href = 'http://localhost:8888/'
 				    	}
 				  	}
 				});
