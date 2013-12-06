@@ -20,6 +20,7 @@ app.use(express.logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(express.methodOverride())
+app.use(express.cookieParser('MySeretAintASecret'))
 app.use(app.router)
 app.use(function (err, req, res, next) {
 	err.handleError(res)
@@ -30,11 +31,23 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler())
 }
 
+app.post('/login', function(req, res){
+  users.findOne(req.params.email, res, function(user){
+  	if(bcrypt.compareSync(req.body.password, user.password){
+  		session.email = req.params.email
+  		session.logged_in = true
+  		res.send(200)
+  	}
+  	else res.send(401)
+  })
+})
+
 // Users
 app.get(routes.users.getAll, users.getAll)
 app.get(routes.users.getOne, users.getOne)
 app.post(routes.users.post,  users.post)
 app.post(routes.users.addTrade, users.addTrade)
+app.post(routes.users.login,users.login)
 // app.post(routes.users.addNeed, users.addNeed)
 // app.post(routes.users.addNotification, users.addNotification)
 // app.post(routes.users.addComment, users.addComment)
