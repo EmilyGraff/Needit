@@ -15,6 +15,9 @@ process.on('uncaughtException', function (exception) {
 })
 
 // all environments
+app.set('views', __dirname + '/views') // html files
+app.engine('html', require('ejs').renderFile)
+app.use(express.static(__dirname + '/public'))
 app.set('port', process.env.PORT || config.port)
 app.use(express.logger('dev'))
 app.use(express.json())
@@ -40,6 +43,13 @@ app.post('/login', function(req, res){
   	}
   	else res.send(401)
   })
+
+// Views
+app.get('/', function (req, res) {
+	res.render('index.html')
+})
+app.get('/login', function (req, res) {
+	res.render('login.html')
 })
 
 // Users
@@ -47,11 +57,10 @@ app.get(routes.users.getAll, users.getAll)
 app.get(routes.users.getOne, users.getOne)
 app.post(routes.users.post,  users.post)
 app.post(routes.users.addTrade, users.addTrade)
-app.post(routes.users.login,users.login)
-// app.post(routes.users.addNeed, users.addNeed)
-// app.post(routes.users.addNotification, users.addNotification)
-// app.post(routes.users.addComment, users.addComment)
-// app.post(routes.users.addTransaction, users.addTransaction)
+app.post(routes.users.addNeed, users.addNeed)
+app.post(routes.users.addNotification, users.addNotification)
+app.post(routes.users.addComment, users.addComment)
+app.post(routes.users.addTransaction, users.addTransaction)
 
 // Messages
 app.get(routes.conversations.getAll, conversations.getAll)

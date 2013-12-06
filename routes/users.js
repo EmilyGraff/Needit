@@ -4,8 +4,8 @@ var err           = require('../lib/APIError')
 var APIError      = err.APIError
 var errors        = err.errors
 var elasticSearch = require('../lib/elastic-client')
-var bcrypt        = require 'bcrypt'
-var salt          = bcrypt.genSaltSync 10
+var bcrypt        = require('bcrypt')
+var salt          = bcrypt.genSaltSync(10)
 
 var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
 var db = mongoose.createConnection(uri + '/users')
@@ -87,10 +87,9 @@ exports.getOne = function (req, res) {
 exports.post = function (req, res) {
   findOne(req.body.email, res, function(user){
     if(!user) {
-      pass = 
       var user = new UserModel({
         pseudo : req.body.pseudo,
-        password : bcrypt.hashSync(req.body.password, salt)
+        password : bcrypt.hashSync(req.body.password, salt),
         email : req.body.email,
         inscription: req.body.inscription,
         adress: req.body.adress,
@@ -139,7 +138,57 @@ exports.addNeed = function (req, res) {
     }
     else {
       user.needs.push({
-        need: { type: String, required: true }
+        need: req.body.need
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
+exports.addNotification = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.notifications.push({
+        seen: req.body.seen,
+        notification_type: req.body.notification_type,
+        transaction: req.body.transaction
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
+exports.addComment = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.comments_on_me.push({
+        user: req.body.user,
+        message: req.body.message,
+        transaction: req.body.transaction
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
+exports.addTransaction = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.transactions.push({
+        trader: req.body.trader,
+        need: req.body.need
       })
       console.log(user)
       res.send(200)
