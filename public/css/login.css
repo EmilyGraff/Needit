@@ -1,0 +1,21 @@
+html {height: 100%;}
+body {  width: 100%; background-color: #000000; font-family: Helvetica; font-size: 16px; color:#FFFFFF;  }
+
+h1 { font-size: 60px; text-align: center;}
+span {color:black;}
+
+.heigh100p {height: 100%;}
+.width100p {width: 96%;}
+
+.margbot20 {margin-bottom: 20px;}
+.margbot40 {margin-bottom: 40px;}
+
+.margtop20 {margin-top: 20px;}
+
+.marg-right20 {margin-right: 20px;}
+
+.padding-top30 {padding-top: 25%;}
+
+.vertAlign10 {padding-top: -10%;}
+
+#key {width: 20%; padding-left: 40%;}
