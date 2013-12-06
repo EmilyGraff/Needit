@@ -51,7 +51,7 @@ var UserModel = db.model('User', User)
 
 
 // TEST INSERTS
-new UserModel({
+var user = new UserModel({
   pseudo: "thomas",
   password: bcrypt.hashSync('password', salt),
   email: "toto@domain.com",
@@ -61,13 +61,25 @@ new UserModel({
   score: 1234, 
   area_width: 12,
   delay: 0,
-  trades: [],
+  trades: [
+  {
+    "active": true,
+    "timestamp": new Date(),
+    "keywords": [
+      "mug",
+      "mug blanc",
+      "mug facebook"
+    ]
+  }
+  ],
   needs: [],
   notifications: [],
   comments_on_me: [],
   transactions: []
-}).save(function (err) {
+})
+user.save(function (err) {
   if (err) throw err
+  elasticSearch.index(user)
   console.log('inserted test user')
 })
 
@@ -147,7 +159,6 @@ exports.addNotification = function (req, res) {
         notification_type: req.body.notification_type,
         transaction: req.body.transaction
       })
-      console.log(user)
       res.send(200)
     }
   })
@@ -155,16 +166,13 @@ exports.addNotification = function (req, res) {
 
 exports.addComment = function (req, res) {
   findOne(req.params.email, res, function(user){
-    if(!user) {
-      res.send(400)
-    }
+    if(!user) throw new APIError(404, errors.userNotFound)
     else {
       user.comments_on_me.push({
         user: req.body.user,
         message: req.body.message,
         transaction: req.body.transaction
       })
-      console.log(user)
       res.send(200)
     }
   })
@@ -172,28 +180,31 @@ exports.addComment = function (req, res) {
 
 exports.addTransaction = function (req, res) {
   findOne(req.params.email, res, function(user){
-    if(!user) {
-      res.send(400)
-    }
+    if(!user) throw new APIError(404, errors.userNotFound)
     else {
       user.transactions.push({
         trader: req.body.trader,
         need: req.body.need
       })
-      console.log(user)
       res.send(200)
     }
+  })
+}
+
+exports.searchForKeywords = function (req, res) {
+  elasticSearch.searchForKeywords(req.params.query, function (data) {
+    res.json(data)
   })
 }
 
 // find by id from request.params.id
 var findOne = function (email, res, next) {
   if (!isValidEmail(email)) {
-    res.send(422, 'invalid parameter: email')
+    new APIError(422, errors.invalidEmail).handlerError(res)
   }
   UserModel.findOne({"email": email}, function (err, user) {
-    if (err) throw new APIError(500, errors.find).handleError(res)
-    else if (!user) throw new APIError(404, errors.userNotFound).handleError(res)
+    if (err) new APIError(500, errors.find).handleError(res)
+    else if (!user) new APIError(404, errors.userNotFound).handleError(res)
     return next(user)
   })
 }

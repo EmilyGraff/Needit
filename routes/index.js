@@ -6,7 +6,8 @@ exports.users = {
 	addNeed: "/users/:email/needs",
 	addNotification: "/users/:email/notifications",
 	addComment: "/users/:email/comments",
-	addTransaction: "/users/:email/transactions"
+	addTransaction: "/users/:email/transactions",
+	searchForKeywords: "/users/keywords/:query"
 }
 
 exports.conversations = {

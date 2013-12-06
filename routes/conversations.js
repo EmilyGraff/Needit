@@ -109,8 +109,8 @@ function findOne (req, res, next) {
       if (err) throw new APIError(500, errors.find)
       if (!conversation) throw new APIError(404, errors.conversationNotFound)
       return next(conversation)
-  });
-};
+  })
+}
 
 // Check if valid mongodb ObjectID
 function isValidObjectID (str) {

@@ -67,6 +67,7 @@ app.post(routes.users.addNeed, users.addNeed)
 app.post(routes.users.addNotification, users.addNotification)
 app.post(routes.users.addComment, users.addComment)
 app.post(routes.users.addTransaction, users.addTransaction)
+app.get(routes.users.searchForKeywords, users.searchForKeywords)
 
 // Messages
 app.get(routes.conversations.getAll, conversations.getAll)
@@ -75,8 +76,6 @@ app.get(routes.conversations.getByNeeder, conversations.getByNeeder)
 app.post(routes.conversations.post, conversations.post)
 app.put(routes.conversations.addTrader, conversations.addTrader)
 app.put(routes.conversations.addMessage, conversations.addMessage)
-
-
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'))
