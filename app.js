@@ -25,7 +25,7 @@ app.use(express.urlencoded())
 app.use(express.methodOverride())
 app.use(app.router)
 app.use(function (err, req, res, next) {
-	err.handleError(req, res)
+	err.handleError(res)
 })
 
 // development only
@@ -46,17 +46,19 @@ app.get(routes.users.getAll, users.getAll)
 app.get(routes.users.getOne, users.getOne)
 app.post(routes.users.post,  users.post)
 app.post(routes.users.addTrade, users.addTrade)
-// app.post(routes.users.addNeed, users.addNeed)
-// app.post(routes.users.addNotification, users.addNotification)
-// app.post(routes.users.addComment, users.addComment)
-// app.post(routes.users.addTransaction, users.addTransaction)
+app.post(routes.users.addNeed, users.addNeed)
+app.post(routes.users.addNotification, users.addNotification)
+app.post(routes.users.addComment, users.addComment)
+app.post(routes.users.addTransaction, users.addTransaction)
 
 // Messages
 app.get(routes.conversations.getAll, conversations.getAll)
 app.get(routes.conversations.getOne, conversations.getOne)
+app.get(routes.conversations.getByNeeder, conversations.getByNeeder)
 app.post(routes.conversations.post, conversations.post)
 app.put(routes.conversations.addTrader, conversations.addTrader)
 app.put(routes.conversations.addMessage, conversations.addMessage)
+
 
 
 http.createServer(app).listen(app.get('port'), function(){

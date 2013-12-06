@@ -4,6 +4,8 @@ var err           = require('../lib/APIError')
 var APIError      = err.APIError
 var errors        = err.errors
 var elasticSearch = require('../lib/elastic-client')
+var bcrypt        = require('bcrypt')
+var salt          = bcrypt.genSaltSync(10)
 
 var uri = process.env.MONGOLAB_URI || config.MongoDB_URL
 var db = mongoose.createConnection(uri + '/users')
@@ -11,6 +13,7 @@ var db = mongoose.createConnection(uri + '/users')
 var Schema = mongoose.Schema
 var User = new Schema({
   pseudo : { type: String, required: true },
+  password : { type: String, required: true },
   email : { type: String, required: true},
   inscription: { type: Date, required: true, default: Date.now},
   adress: { type: String, required: true},
@@ -20,11 +23,11 @@ var User = new Schema({
   delay: { type: Number, required: true },
   trades: [{ 
     active: { type: Boolean, required: true }, 
-    timestamp: { type: Date, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
     keywords: { type: Array, required: true }
   }],
   needs: [{
-    timestamp: { type: Date, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
     need: { type: String, required: true }
   }],
   notifications: [{
@@ -39,7 +42,7 @@ var User = new Schema({
   }],
   transactions: [{
     trader: { type: Boolean, required: true },
-    timestamp: { type: Date, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
     need: { type: String, required: true }
   }]
 }, { versionKey: false })
@@ -48,9 +51,9 @@ var UserModel = db.model('User', User)
 
 
 // TEST INSERTS
-
 new UserModel({
   pseudo: "thomas",
+  password: bcrypt.hashSync('password', salt),
   email: "name@domain.com",
   inscription: new Date(),
   adress: "130 rue difj",
@@ -87,6 +90,7 @@ exports.post = function (req, res) {
     if(!user) {
       var user = new UserModel({
         pseudo : req.body.pseudo,
+        password : bcrypt.hashSync(req.body.password, salt),
         email : req.body.email,
         inscription: req.body.inscription,
         adress: req.body.adress,
@@ -113,7 +117,7 @@ exports.post = function (req, res) {
 }
 
 exports.addTrade = function (req, res) {
-  findOne(req.body.email, res, function(user){
+  findOne(req.params.email, res, function(user){
     if(!user) {
       res.send(400)
     }
@@ -128,14 +132,79 @@ exports.addTrade = function (req, res) {
   })
 }
 
+exports.addNeed = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.needs.push({
+        need: req.body.need
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
+exports.addNotification = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.notifications.push({
+        seen: req.body.seen,
+        notification_type: req.body.notification_type,
+        transaction: req.body.transaction
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
+exports.addComment = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.comments_on_me.push({
+        user: req.body.user,
+        message: req.body.message,
+        transaction: req.body.transaction
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
+exports.addTransaction = function (req, res) {
+  findOne(req.params.email, res, function(user){
+    if(!user) {
+      res.send(400)
+    }
+    else {
+      user.transactions.push({
+        trader: req.body.trader,
+        need: req.body.need
+      })
+      console.log(user)
+      res.send(200)
+    }
+  })
+}
+
 // find by id from request.params.id
 function findOne (email, res, next) {
   if (!isValidEmail(email)) {
     res.send(422, 'invalid parameter: email')
   }
   UserModel.findOne({"email": email}, function (err, user) {
-    if (err) throw new APIError(500, errors.find)
-    if (!user) throw new APIError(404, errors.userNotFound)
+    if (err) throw new APIError(500, errors.find).handleError(res)
+    else if (!user) throw new APIError(404, errors.userNotFound).handleError(res)
     return next(user)
   })
 }
