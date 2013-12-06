@@ -5,41 +5,37 @@
     <title>Need It</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Loading Bootstrap -->
-
-    <!-- Loading Flat UI -->
-    <link href="assets/css/flat-ui.css" rel="stylesheet">
-    <link href="assets/css/demo.css" rel="stylesheet">
-
-    <link rel="shortcut icon" href="images/favicon.ico">
-	
-	<link href="assets/css/design.css" rel="stylesheet">
-	
-    <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
-    
-    <link href="assets/bootstrap/css/bootstrap-tagsinput.css" rel="stylesheet">
-	
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
-    <!--[if lt IE 9]>
-      <script src="js/html5shiv.js"></script>
-    <![endif]-->
-    
-    <!-- Load JS here for greater good =============================-->
-    <script src="assets/js/jquery-1.8.3.min.js"></script>
-    <script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="assets/js/jquery.ui.touch-punch.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bootstrap-select.js"></script>
-    <script src="assets/js/bootstrap-switch.js"></script>
-    <script src="assets/js/flatui-checkbox.js"></script>
-    <script src="assets/js/flatui-radio.js"></script>
-    <script src="assets/js/jquery.tagsinput.js"></script>
-    <script src="assets/js/jquery.placeholder.js"></script>
-    <script src="assets/js/jquery.stacktable.js"></script>
-    <script src="http://vjs.zencdn.net/4.1/video.js"></script>
-    <script src="assets/bootstrap/js/bootstrap-tagsinput.js"></script>
-    
-   
+    <link href="/css/design.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap-tagsinput.css" rel="stylesheet">
+    <script src="/js/jquery-1.8.3.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+    <script src="/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-tagsinput.min.js"></script>
+      
+    <script type="text/javascript">
+      window.onload = function(){
+        function getInfo(){
+          $.getJSON("/users/"+$.cookie('email'), {}, function(user){
+            if(!user){
+              document.getElementById('needs').style.visibility = 'hidden'
+            }
+            else {
+              var container = document.getElementById('container')
+              for(i = 0; i < user.needs.length; i++){
+                var div = document.createElement('div')
+                div.innerHTML = user.needs[i]
+                div.setAttribute('class', 'well')
+                container.appendChild(div)
+              }
+            }
+          })
+        }
+        getInfo()
+      }
+    </script>
     
   </head>
   
@@ -87,29 +83,18 @@
   		
   		
   		
-  		<div class="row-fluid width100p">
+  		<div id='needs' class="row-fluid width100p">
   			<div class="span6 offset3 width100p">
-  				<div class="well width100p">
+  				<div id='container' class="well width100p">
   					<h3>My Needs</h3>
-  					<div class="well">Need 1</div>
-  					<div class="well">Need 1</div>
-  					<div class="well">Need 1</div>
   				</div>
   			</div>
   		</div>
   		
   		<br><br><br><br><br>
-  		
-  		
   	
 </div>
 </div>
-
-
-
-  		<div>
-  				<input type="text" data-role="tagsinput" placeholder="I Need" />
-  		</div>
 
 </body>
 </html>

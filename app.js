@@ -60,6 +60,9 @@ app.post('/login', function(req, res){
   	}
   })
 })
+app.get('/needs', function(req, res){
+	res.render('myneeds.html')
+})
 
 // Users
 app.get(routes.users.getAll, users.getAll)

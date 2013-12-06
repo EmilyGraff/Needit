@@ -92,6 +92,7 @@ exports.getAll = function(req, res){
 
 exports.getOne = function (req, res) {
   findOne(req.params.email, res, function (user) {
+    console.log(user)
     res.json(user)
   })
 }
