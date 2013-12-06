@@ -156,7 +156,7 @@ exports.addNeed = function (req, res) {
               transaction: ' '
             })
             elasticSearch.update(fetched_user)
-            twilioClient.notify("+33610790623", "Un acheteur a posté une recherche en rapport avec l'un de vos mots clés: " + req.body.need)
+            twilioClient.notify(req.body.number, "Un acheteur a posté une recherche en rapport avec l'un de vos mots clés: " + req.body.need)
             fetched_user.save(function (err) {
               if (err) throw err
             })
