@@ -19,17 +19,20 @@
       window.onload = function(){
         function getInfo(){
           $.getJSON("/users/"+$.cookie('email'), {}, function(user){
-            if(!user){
+            if(!user || user.needs == []){
               document.getElementById('needs').style.visibility = 'hidden'
             }
             else {
               var container = document.getElementById('container')
-              for(i = 0; i < user.needs.length; i++){
-                var div = document.createElement('div')
-                div.innerHTML = user.needs[i]
-                div.setAttribute('class', 'well')
-                container.appendChild(div)
+              if(user.needs.length > 0){
+                for(i = 0; i < user.needs.length; i++){
+                  var div = document.createElement('div')
+                  div.innerHTML = user.needs[i]
+                  div.setAttribute('class', 'well')
+                  container.appendChild(div)
+                }
               }
+              else container.style.visibility = 'hidden'
 
               var profil_button_div = document.getElementById('profil_button')
               var profil_button = document.createElement('button')

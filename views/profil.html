@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>UN TITRE</title>
+
+    
+    <script src="/js/jquery-1.8.3.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <link href="/css/bootstrap2.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+    
+
+    <script type="text/javascript">
+        window.onload = function(){
+        function getInfo(){
+          $.getJSON("/users/"+$.cookie('email'), {}, function(user){
+            if(!user){
+              window.location.href = '/'
+            }
+            else {
+              document.getElementById('name').innerHTML = user.pseudo
+              document.getElementById('adress').innerHTML = user.adress + " "
+              document.getElementById('grade').innerHTML += " Grade : " + user.score
+              console.log(user.needs.length)
+              if(user.needs.length == 0){
+                document.getElementById('historic').style.visibility = 'hidden'
+                document.getElementById('historic_tab').style.visibility = 'hidden'
+              }
+              else {
+
+              }
+            }
+          })
+        }
+        getInfo()
+      }
+    </script>
+
+  </head>
+
+  <body>
+
+
+    <div class="container">
+    	<div class="col-lg-6 col-lg-offset-3">
+    	
+    		<!-- ===== Profile Navigation ===== -->
+    		<div class="row w">
+    			<div class="col-md-4">
+    				<img class="img-responsive" src="/img/avatar.jpg" alt="">
+					<ul class="nav nav-tabs nav-stacked" id="myTab">
+					  <li class="active"><a href="#apropos">À propos</a></li>
+					  <li><a id='historic_tab' href="#historique">Historique</a></li>
+					</ul>    			
+				</div><!-- col-md-4 -->
+
+    		<!-- ===== Profile Content ===== -->
+    			<div class="col-md-8">
+	    			<div class="tab-content">
+	    			
+	    			  <!-- ===== First Tab ===== -->
+					  <div class="tab-pane active" id="apropos">
+					  	<h3 id="name"></h3>
+					  	<h5 id="adress"><i class="icon-globe"></i></h5>
+					  	<hr>
+					  	<h4 id="grade"><i class="icon-trophy"></i></h4>
+					  </div><!-- tab apropos -->
+  
+	    			  <!-- ===== Second Tab ===== -->
+					  <div class="tab-pane" id="historic">
+						  <h4><i class="icon-shopping-cart"></i> History</h4>
+					  	<p class="sm">
+					  		<grey>Artile 2</grey> | Octobre 2013<br/>
+					  		<grey>Article 1</grey> | Mai 2013<br/>
+					  	</p>
+
+					  </div><!-- /Tab Portfolio -->
+					  
+	    			  
+					  
+					</div><!-- Tab Content -->
+    			</div><!-- col-md-8 -->
+    		</div><!-- row w -->
+    	</div><!-- col-lg-6 -->
+    </div><!-- /.container -->
+	<script>
+    $('#myTab a').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })  
+	</script>    
+    
+  </body>
+</html>
