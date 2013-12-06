@@ -16,8 +16,8 @@ var User = new Schema({
   password : { type: String, required: true },
   email : { type: String, required: true},
   inscription: { type: Date, required: true, default: Date.now},
-  adress: { type: String, required: true},
-  description: String,
+  adress: { type: String, required: false},
+  description: { type: String, required: false },
   score: { type: String, required: true },
   area_width: { type: Number, required: true },
   delay: { type: Number, required: true },
@@ -86,23 +86,23 @@ exports.getOne = function (req, res) {
 }
 
 exports.post = function (req, res) {
-  findOne(req.body.email, res, function(user){
+  UserModel.findOne({ "email": req.body.email}, function(err, user){
+    if (err) throw new APIError(500, errors.find)
     if(!user) {
       var user = new UserModel({
         pseudo : req.body.pseudo,
         password : bcrypt.hashSync(req.body.password, salt),
         email : req.body.email,
-        inscription: req.body.inscription,
-        adress: req.body.adress,
+        adress: req.body.adress || '',
         description: req.body.description || '',
-        score: req.body.score, 
-        area_width: req.body.area_width,
-        delay: req.body.delay,
-        trades: req.body.trades || [],
-        needs: req.body.needs || [],
-        notifications: req.body.notifications || [],
-        comments_on_me: req.body.comments_on_me || [],
-        transactions: req.body.transactions || []
+        score: 0,
+        area_width: 1,
+        delay: 0,
+        trades: [],
+        needs: [],
+        notifications: [],
+        comments_on_me: [],
+        transactions: []
       })
       user.save(function (err) {
         if (err) throw new APIError(500, errors.save)
@@ -118,30 +118,22 @@ exports.post = function (req, res) {
 
 exports.addTrade = function (req, res) {
   findOne(req.params.email, res, function(user){
-    if(!user) {
-      res.send(400)
-    }
-    else {
-      user.trades.push({
-        active: req.body.active,
-        keywords: req.body.keywords
-      })
-      console.log(user)
-      res.send(200)
-    }
+    if (!user) throw new APIError(404, errors.userNotFound)
+    user.trades.push({
+      active: req.body.active,
+      keywords: req.body.keywords
+    })
+    res.send(200)
   })
 }
 
 exports.addNeed = function (req, res) {
   findOne(req.params.email, res, function(user){
-    if(!user) {
-      res.send(400)
-    }
+    if (!user) throw new APIError(404, req.userNotFound)
     else {
       user.needs.push({
         need: req.body.need
       })
-      console.log(user)
       res.send(200)
     }
   })
@@ -149,9 +141,7 @@ exports.addNeed = function (req, res) {
 
 exports.addNotification = function (req, res) {
   findOne(req.params.email, res, function(user){
-    if(!user) {
-      res.send(400)
-    }
+    if(!user) throw new APIError(404, errors.userNotFound)
     else {
       user.notifications.push({
         seen: req.body.seen,

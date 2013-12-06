@@ -11,7 +11,7 @@ var conversations = require('./routes/conversations')
 var app = express()
 
 process.on('uncaughtException', function (exception) {
-  console.error(exception.stack)
+  console.error(exception)
 })
 
 // all environments

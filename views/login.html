@@ -20,30 +20,30 @@
 			<div class="span4 offset2" id="login">
 				<div class="row-fluid margbot40">
 					<div class="span12"> 
-						<img src="assets/images/icons/svg/login_key.svg" id="key" onclick="printLoginForm();">
+						<img src="/img/login_key.svg" id="key" onclick="printLoginForm();">
 					</div>
 				</div> 
 				<div class="row-fluid">
 					<div class="span12"> 
-						<h1> Login</h1>
+						<h1>Login</h1>
 					</div>
-				</div> 
+				</div>
 			</div>
 			<div class="span4 offset2" id="signup-form">
-				<form class="well form-actions">
+				<form class="well form-actions" action="/users" method="POST">
 					<div class="row-fluid">
 						<button class="btn btn-block btn-primary margbot20"> Login with Facebook</button>
 					</div>
 					<div class="row-fluid">
 						<div class="span6">
-							<input type="text" value="usermane" class="width100p" />
+							<input type="text" name="pseudo" placeholder="usermane" class="width100p" />
 						</div>
 						<div class="span6">
-							<input type="password" value="password" class="width100p"/>
+							<input type="password" name="password" placeholder="password" class="width100p"/>
 						</div>
 					</div>
 					
-					<input type="text" value="email"  class="width100p"/>
+					<input type="text" name="email" placeholder="email"  class="width100p"/>
 					
 					<div id="more" onclick="printMoreOptions();"> <span class="btn btn-block btn-inverse">more</span></div>
 					<div id="more-options">
@@ -57,12 +57,12 @@
 			<div class="span4" id="signup">
 				<div class="row-fluid margbot40">
 					<div class="span12"> 
-						<img src="assets/images/icons/svg/signup_user.svg" id="key" onclick="printSignupForm();" >
+						<img src="/img/signup_user.svg" id="key" onclick="printSignupForm();" >
 					</div>
 				</div> 
 				<div class="row-fluid">
 					<div class="span12"> 
-						<h1> Signup</h1>
+						<h1>Signup</h1>
 					</div>
 				</div>  
 			</div>
