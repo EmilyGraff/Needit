@@ -30,6 +30,26 @@
                 div.setAttribute('class', 'well')
                 container.appendChild(div)
               }
+
+              var profil_button_div = document.getElementById('profil_button')
+              var profil_button = document.createElement('button')
+              profil_button.setAttribute('class', 'btn btn-default')
+              profil_button.setAttribute('type', 'button')
+              profil_button.innerHTML = 'Trades'
+              profil_button.onclick = function() {
+                window.location.href = '/trades'
+              }
+              profil_button_div.appendChild(profil_button)
+
+              var trade_button_div = document.getElementById('trade_button')
+              var trade_button = document.createElement('button')
+              trade_button.setAttribute('class', 'btn btn-default')
+              trade_button.setAttribute('type', 'button')
+              trade_button.innerHTML = 'Profil'
+              trade_button.onclick = function() {
+                window.location.href = '/profil'
+              }
+              trade_button_div.appendChild(trade_button)
             }
           })
         }
@@ -47,9 +67,10 @@
   	<div class="container-fluid">
   		
   		<div class="row-fluid">
-  			<div class="span2" id="links"><a href="">TRADE</a></div>
+  			<div class="span2" id="trade_button"></div>
   			<div class="span7"></div>
-  			<div class="span3" id="links"><div class="pull-right"><a href="">PROFIL</a> <a href="" onClick="return confirm('Are you sure you want to log out ?');"><i class="icon-off icon-white"></i></a></div></div>
+  			<div class="span3" id="links"><div class="pull-right" id="profil_button">
+        <a href="" onClick="return confirm('Are you sure you want to log out ?');"><i class="icon-off icon-white"></i></a></div></div>
   		</div>
   		
   		
