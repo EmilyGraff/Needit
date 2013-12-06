@@ -36,13 +36,14 @@ if ('development' == app.get('env')) {
 
 app.post('/login', function(req, res){
   users.findOne(req.params.email, res, function(user){
-  	if(bcrypt.compareSync(req.body.password, user.password){
+  	if(bcrypt.compareSync(req.body.password, user.password)){
   		session.email = req.params.email
   		session.logged_in = true
   		res.send(200)
   	}
   	else res.send(401)
   })
+})
 
 // Views
 app.get('/', function (req, res) {
