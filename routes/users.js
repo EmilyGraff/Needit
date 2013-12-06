@@ -4,6 +4,7 @@ var err           = require('../lib/APIError')
 var APIError      = err.APIError
 var errors        = err.errors
 var elasticSearch = require('../lib/elastic-client')
+var twilioClient  = require('../lib/twilio-client')
 var bcrypt        = require('bcrypt')
 var salt          = bcrypt.genSaltSync(10)
 
@@ -62,15 +63,13 @@ var user = new UserModel({
   area_width: 12,
   delay: 0,
   trades: [
-  {
-    "active": true,
-    "timestamp": new Date(),
-    "keywords": [
-      "mug",
-      "mug blanc",
-      "mug facebook"
-    ]
-  }
+    {
+      "active": true,
+      "timestamp": new Date(),
+      "keywords": [
+        "canapé"
+      ]
+    }
   ],
   needs: [],
   notifications: [],
@@ -131,9 +130,10 @@ exports.addTrade = function (req, res) {
   findOne(req.params.email, res, function(user){
     if (!user) throw new APIError(404, errors.userNotFound)
     user.trades.push({
-      active: req.body.active,
+      active: true,
       keywords: req.body.keywords
     })
+    elasticSearch.update(user)
     res.send(200)
   })
 }
@@ -143,7 +143,25 @@ exports.addNeed = function (req, res) {
     if (!user) throw new APIError(404, req.userNotFound)
     else {
       user.needs.push({
+        timestamp: new Date(),
         need: req.body.need
+      })
+      elasticSearch.searchForKeywords(req.body.need, function (data) {
+        data.hits.hits.forEach(function (user, idx, users) {
+          UserModel.findOne({ "email": user._source.email }, function (err, fetched_user) {
+            if (err) throw new APIError(500, errors.find)
+            fetched_user.notifications.push({
+              seen: false,
+              notification_type: "match",
+              transaction: ' '
+            })
+            elasticSearch.update(fetched_user)
+            twilioClient.notify("+33610790623", "Un acheteur a posté une recherche en rapport avec l'un de vos mots clés: " + req.body.need)
+            fetched_user.save(function (err) {
+              if (err) throw err
+            })
+          })
+        })
       })
       res.send(200)
     }
@@ -155,7 +173,7 @@ exports.addNotification = function (req, res) {
     if(!user) throw new APIError(404, errors.userNotFound)
     else {
       user.notifications.push({
-        seen: req.body.seen,
+        seen: false,
         notification_type: req.body.notification_type,
         transaction: req.body.transaction
       })

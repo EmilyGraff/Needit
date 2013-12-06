@@ -28,7 +28,6 @@ new ConversationModel({
 	console.log('insert test conversation')
 });
 
-
 new ConversationModel({
 	needer : "name@domain.com",
 	active : true,
@@ -38,7 +37,6 @@ new ConversationModel({
 	console.log('insert test conversation')
 });
 
-
 // Get by needer -> array conversations
 exports.getByNeeder = function(req, res) {
 	console.log(req.params.email)
@@ -47,7 +45,6 @@ exports.getByNeeder = function(req, res) {
 		res.json(conversations)
 	});
 }
-
 
 // Post one
 exports.post = function(req, res) {
