@@ -1,9 +1,12 @@
-var express  = require('express')
-var http     = require('http')
-var path     = require('path')
+var express = require('express')
+var http    = require('http')
+var path    = require('path')
+var bcrypt  = require('bcrypt')
 
 var config        = require('./config')
-var err     	  = require('./lib/APIError')
+var err           = require('./lib/APIError')
+var APIError      = err.APIError
+var errors        = err.errors
 var routes        = require('./routes')
 var users         = require('./routes/users')
 var conversations = require('./routes/conversations')
@@ -35,13 +38,15 @@ if ('development' == app.get('env')) {
 }
 
 app.post('/login', function(req, res){
-  users.findOne(req.params.email, res, function(user){
-  	if(bcrypt.compareSync(req.body.password, user.password)){
-  		session.email = req.params.email
-  		session.logged_in = true
+  users.findOne(req.body.email, res, function(user){
+  	if (bcrypt.compareSync(req.body.password, user.password)){
+  		req.session.email = req.body.email
+  		req.session.logged_in = true
   		res.send(200)
   	}
-  	else res.send(401)
+  	else {
+  		res.send(401)
+  	}
   })
 })
 

@@ -54,7 +54,7 @@ var UserModel = db.model('User', User)
 new UserModel({
   pseudo: "thomas",
   password: bcrypt.hashSync('password', salt),
-  email: "name@domain.com",
+  email: "toto@domain.com",
   inscription: new Date(),
   adress: "130 rue difj",
   description: 'Cool user',
@@ -187,7 +187,7 @@ exports.addTransaction = function (req, res) {
 }
 
 // find by id from request.params.id
-function findOne (email, res, next) {
+var findOne = function (email, res, next) {
   if (!isValidEmail(email)) {
     res.send(422, 'invalid parameter: email')
   }
@@ -197,6 +197,7 @@ function findOne (email, res, next) {
     return next(user)
   })
 }
+module.exports.findOne = findOne
 
 // check if valid mongodb object id
 function isValidEmail (str) {
