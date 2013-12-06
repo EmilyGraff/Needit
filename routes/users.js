@@ -71,7 +71,6 @@ new UserModel({
   console.log('inserted test user')
 })
 
-
 exports.getAll = function(req, res){
   UserModel.find(function (err, users) {
     if (err) throw new APIError(500, errors.find)
